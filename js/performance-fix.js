@@ -4,7 +4,24 @@
 (function() {
   'use strict';
 
-  // 1. Smooth scroll performance optimization
+  // 1. FORCE ENABLE SCROLLING IMMEDIATELY
+  function enableScrollingImmediately() {
+    // Remove any scroll locks
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    
+    // Remove any height restrictions
+    document.body.style.height = 'auto';
+    document.documentElement.style.height = 'auto';
+    
+    // Enable touch scrolling on mobile
+    document.body.style.webkitOverflowScrolling = 'touch';
+    
+    // Force scrolling to be enabled
+    window.scrollTo(0, 0);
+  }
+
+  // 2. Smooth scroll performance optimization
   let rafId = null;
   let lastScrollY = window.scrollY;
   
@@ -22,7 +39,7 @@
     }, { passive: true });
   }
 
-  // 2. Optimize transform animations
+  // 3. Optimize transform animations
   function optimizeTransforms() {
     // Add will-change hints to animated elements
     const animatedElements = document.querySelectorAll('[style*="transform"]');
@@ -35,7 +52,7 @@
     });
   }
 
-  // 3. Debounce resize events
+  // 4. Debounce resize events
   let resizeTimer;
   window.addEventListener('resize', function() {
     clearTimeout(resizeTimer);
@@ -45,7 +62,7 @@
     }, 250);
   }, { passive: true });
 
-  // 4. Use Intersection Observer for scroll-triggered animations
+  // 5. Use Intersection Observer for scroll-triggered animations
   function setupIntersectionObserver() {
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(
@@ -68,7 +85,7 @@
     }
   }
 
-  // 5. Force GPU acceleration for heavy elements
+  // 6. Force GPU acceleration for heavy elements
   function enableHardwareAcceleration() {
     const heavyElements = document.querySelectorAll('.page, .background, .showreel, .project');
     heavyElements.forEach(el => {
@@ -78,7 +95,7 @@
     });
   }
 
-  // 6. Optimize image rendering
+  // 7. Optimize image rendering
   function optimizeImages() {
     const images = document.querySelectorAll('img');
     images.forEach(img => {
@@ -87,7 +104,7 @@
     });
   }
 
-  // 7. Reduce paint operations
+  // 8. Reduce paint operations
   function reducePaintOperations() {
     // Add CSS containment to isolated components
     const sections = document.querySelectorAll('section, .page, footer');
@@ -96,7 +113,7 @@
     });
   }
 
-  // 8. Smooth out transition jank
+  // 9. Smooth out transition jank
   function smoothTransitions() {
     // Override any janky transitions
     const style = document.createElement('style');
@@ -116,13 +133,22 @@
       img, video {
         content-visibility: auto;
       }
+      
+      /* FORCE SCROLLING ENABLED */
+      body, html {
+        overflow: auto !important;
+        height: auto !important;
+      }
     `;
     document.head.appendChild(style);
   }
 
-  // 9. Initialize all optimizations
+  // 10. Initialize all optimizations
   function init() {
-    // Wait for DOM to be ready
+    // ENABLE SCROLLING IMMEDIATELY - Don't wait for anything
+    enableScrollingImmediately();
+    
+    // Wait for DOM to be ready for other optimizations
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
       return;
@@ -141,7 +167,8 @@
     }, 100);
   }
 
-  // Start optimization
+  // Start optimization IMMEDIATELY
+  enableScrollingImmediately();
   init();
 
   // Re-optimize on page visibility change
@@ -150,5 +177,10 @@
       setTimeout(optimizeTransforms, 100);
     }
   });
+  
+  // Re-enable scrolling after any potential locks
+  setTimeout(enableScrollingImmediately, 500);
+  setTimeout(enableScrollingImmediately, 1000);
+  setTimeout(enableScrollingImmediately, 2000);
 
 })();
